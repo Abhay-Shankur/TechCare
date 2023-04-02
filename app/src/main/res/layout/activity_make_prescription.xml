@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MakePrescriptionActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/editTextTextPersonName1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/fredoka_medium"
+                android:hint="Name"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:textColorHint="#757575" />
+
+            <EditText
+                android:id="@+id/editTextTextPersonName2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="32dp"
+                android:ems="10"
+                android:fontFamily="@font/fredoka_medium"
+                android:hint="Age"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:textColorHint="#757575"
+                app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName1"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName1" />
+
+            <EditText
+                android:id="@+id/editTextTextPersonName3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="32dp"
+                android:ems="10"
+                android:fontFamily="@font/fredoka_medium"
+                android:hint="Gender"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:textColorHint="#757575"
+                app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName2"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine1"
+                android:layout_width="329dp"
+                android:layout_height="207dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="32dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/fredoka_medium"
+                android:gravity="start|top"
+                android:hint="Medical Advice"
+                android:inputType="textMultiLine"
+                android:textColorHint="#757575"
+                app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName3"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine2"
+                android:layout_width="336dp"
+                android:layout_height="147dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="32dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:fontFamily="@font/fredoka_medium"
+                android:gravity="start|top"
+                android:hint="Medicine RX"
+                android:inputType="textMultiLine"
+                android:textColorHint="#757575"
+                app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine1"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine1" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Create"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

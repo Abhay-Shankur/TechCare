@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/replaceable_frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/ic_bg_menu_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent=".2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/imageView_profile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="Profile Image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+            app:layout_constraintVertical_bias=".15"
+            app:srcCompat="@drawable/default_image_icon"
+            tools:ignore="ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/textView_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/fredoka_semibold"
+            android:text="Some Text"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView_profile" />
+
+        <Button
+            android:id="@+id/button_editProfile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:contentDescription="Edit Profile "
+            android:elevation="15dp"
+            android:fontFamily="@font/fredoka_medium"
+            android:padding="15dp"
+            android:text="Button Text"
+            android:textSize="16sp"
+            app:cornerRadius="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_profile"
+            app:layout_constraintWidth_percent=".5" />
+
+        <Button
+            android:id="@+id/button_loginsignup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="LogIn / SignUp "
+            android:elevation="15dp"
+            android:fontFamily="@font/fredoka_medium"
+            android:padding="15dp"
+            android:text="Text"
+            android:textSize="16sp"
+            app:cornerRadius="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/textView_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_editProfile"
+            app:layout_constraintVertical_bias="0.79"
+            app:layout_constraintWidth_percent=".35" />
+
+        <TextView
+            android:id="@+id/textView_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/fredoka_bold"
+            android:text="Developed by 3DevMusketeers"
+            android:textColor="@color/text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

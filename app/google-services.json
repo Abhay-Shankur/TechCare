@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "512924826184",
+    "firebase_url": "https://assist-dr-64a95-default-rtdb.firebaseio.com",
+    "project_id": "assist-dr-64a95",
+    "storage_bucket": "assist-dr-64a95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512924826184:android:870c0d6b0ebd52367cf67d",
+        "android_client_info": {
+          "package_name": "com.techcare.assistdr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "512924826184-jiv730c0l5cvd2qjpcck7hqd95gqt1dg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techcare.assistdr",
+            "certificate_hash": "9b45bcf792b4334b5c03e6363fc8f12f99e44200"
+          }
+        },
+        {
+          "client_id": "512924826184-9bv48qrd54337j4gp8gh98gg4i89ope2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC50xWvJQerCrTHuko8sNRRaXESpjm7vDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "512924826184-9bv48qrd54337j4gp8gh98gg4i89ope2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

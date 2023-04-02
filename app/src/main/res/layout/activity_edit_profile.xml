@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="30dp"
+    tools:context=".EditProfileActivity">
+
+    <ImageView
+        android:id="@+id/imageViewProfile"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="20dp"
+        android:contentDescription="Profile Image"
+        app:srcCompat="@drawable/default_image_icon"
+        tools:ignore="ImageContrastCheck" />
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="10"
+        android:fontFamily="@font/fredoka_medium"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:paddingHorizontal="5dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/editTextSpecialis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="10"
+        android:fontFamily="@font/fredoka_medium"
+        android:hint="Specialis"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:paddingHorizontal="5dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/editTextEducation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="10"
+        android:fontFamily="@font/fredoka_medium"
+        android:hint="Education"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:paddingHorizontal="5dp" />
+
+    <EditText
+        android:id="@+id/editTextHomeTown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="10"
+        android:fontFamily="@font/fredoka_medium"
+        android:hint="Home Town"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:paddingHorizontal="5dp" />
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/fredoka_semibold"
+        android:text="Save" />
+</LinearLayout>
