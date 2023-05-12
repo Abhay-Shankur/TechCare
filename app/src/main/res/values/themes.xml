@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+<!--    <style name="Theme.FindMyDR" parent="Theme.MaterialComponents.DayNight.DarkActionBar" >-->
+    <style name="Theme.FindMyDR" parent="Theme.MaterialComponents.Light.DarkActionBar" >
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_m</item>
+        <item name="colorPrimaryVariant">@color/purple_d</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple_m</item>
+        <item name="colorSecondaryVariant">@color/purple_d</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+    </style>
+</resources>

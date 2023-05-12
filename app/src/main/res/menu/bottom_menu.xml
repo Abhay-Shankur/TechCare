@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottomMenuHome"
+        android:title="@string/bottomMenuList1"
+        android:icon="@drawable/menulist_home"/>
+
+    <item
+        android:id="@+id/bottomMenuSchedule"
+        android:title="@string/bottomMenuList2"
+        android:icon="@drawable/menulist_calendar"/>
+
+<!--    <item-->
+<!--        android:id="@+id/bottomMenuChat"-->
+<!--        android:title="@string/bottomMenuList3"-->
+<!--        android:icon="@drawable/menulist_chat"/>-->
+
+    <item
+        android:id="@+id/bottomMenuMenu"
+        android:title="@string/bottomMenuList4"
+        android:icon="@drawable/menulist_profile"/>
+
+</menu>

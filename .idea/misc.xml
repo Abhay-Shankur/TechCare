@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/bg_appointment_today_cardview.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/calendar_check_outline.xml" value="0.2" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/doctordetail_bg1.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/doctordetail_btn.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/forum_outline.xml" value="0.2" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/home_variant.xml" value="0.2" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/menu.xml" value="0.2" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/menuListMenu.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/menulist_calendar.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/menulist_menu.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/drawable/menulist_profile.xml" value="0.2385" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/activity_appointment.xml" value="0.264" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/activity_doctor_detail.xml" value="0.2" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/activity_main.xml" value="0.23229166666666667" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/fragment_home.xml" value="0.264" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/fragment_login.xml" value="0.21822916666666667" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/fragment_map.xml" value="0.23229166666666667" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/fragment_profile.xml" value="0.23229166666666667" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/fragment_signup.xml" value="0.23229166666666667" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/layout_appointment_today.xml" value="0.264" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/layout_top_doctors.xml" value="0.264" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/layout/layout_top_doctors_item.xml" value="0.264" />
+        <entry key="..\:/Android Projects/Tech Care/FindMyDR/app/src/main/res/menu/bottom_menu.xml" value="0.23229166666666667" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

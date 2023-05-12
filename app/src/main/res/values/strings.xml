@@ -1,0 +1,20 @@
+<resources>
+    <!--    App Name    -->
+    <string name="app_name">Find My DR</string>
+    <!--    Bottom Menu List    -->
+    <string name="bottomMenuList1">Home</string>
+    <string name="bottomMenuList2">Schedule</string>
+    <string name="bottomMenuList3">Chat</string>
+    <string name="bottomMenuList4">Profile</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appointment_today">Appointment Today</string>
+    <string name="calander_image">Calander Image</string>
+    <string name="clock_image">Clock Image</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="top_doctors">Top Doctors</string>
+
+
+<!--    <string name="default_web_client_id">765249008650-v9g5fqu71q4dj4siub54kub5e7lqe1e7.apps.googleusercontent.com</string>-->
+
+</resources>
