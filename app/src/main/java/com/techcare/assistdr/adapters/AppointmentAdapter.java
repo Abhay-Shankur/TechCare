@@ -8,35 +8,36 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.techcare.assistdr.AppointmentDetailActivity;
 import com.techcare.assistdr.R;
-import com.techcare.assistdr.api.tablesclass.TableAppointmentDetails;
+import com.techcare.assistdr.modules.AppointmentDetails;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
     private Context context;
-    private List<TableAppointmentDetails> dataList;
+    private List<AppointmentDetails> dataList;
 
-    public AppointmentAdapter(Context context, List<TableAppointmentDetails> dataList) {
+    public AppointmentAdapter(Context context, List<AppointmentDetails> dataList) {
         this.context = context;
         this.dataList = dataList;
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_appointment_list, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        TableAppointmentDetails appointmentDetails =dataList.get(position);
+    public void onBindViewHolder(@NotNull  ViewHolder holder, int position) {
+        AppointmentDetails appointmentDetails =dataList.get(position);
         holder.Name.setText(appointmentDetails.getAppointmentname());
         holder.Phone.setText(appointmentDetails.getAppointmentphone());
         holder.Date.setText(appointmentDetails.getAppointmentSchedule());
@@ -52,7 +53,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         ConstraintLayout constraintLayout;
         ImageView imageView;
         TextView Name,Phone,Date;
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NotNull View itemView) {
             super(itemView);
             constraintLayout=itemView.findViewById(R.id.appointmentCardviewLayout);
             imageView=itemView.findViewById(R.id.appointmentCardviewImage);
@@ -65,7 +66,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         @Override
         public void onClick(View view) {
             int pos= this.getAdapterPosition();
-            TableAppointmentDetails appointmentDetails = dataList.get(pos);
+            AppointmentDetails appointmentDetails = dataList.get(pos);
             Intent intent= new Intent(context, AppointmentDetailActivity.class);
             intent.putExtra("AppointmentId", appointmentDetails.getAppointmentId());
             context.startActivity(intent);

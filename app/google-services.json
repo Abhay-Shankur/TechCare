@@ -1,42 +1,33 @@
 {
   "project_info": {
-    "project_number": "512924826184",
-    "firebase_url": "https://assist-dr-64a95-default-rtdb.firebaseio.com",
-    "project_id": "assist-dr-64a95",
-    "storage_bucket": "assist-dr-64a95.appspot.com"
+    "project_number": "81847378525",
+    "project_id": "techcare-67219",
+    "storage_bucket": "techcare-67219.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:512924826184:android:870c0d6b0ebd52367cf67d",
+        "mobilesdk_app_id": "1:81847378525:android:ac45e7094e0cd4c5cae3b4",
         "android_client_info": {
           "package_name": "com.techcare.assistdr"
         }
       },
       "oauth_client": [
         {
-          "client_id": "512924826184-jiv730c0l5cvd2qjpcck7hqd95gqt1dg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.techcare.assistdr",
-            "certificate_hash": "9b45bcf792b4334b5c03e6363fc8f12f99e44200"
-          }
-        },
-        {
-          "client_id": "512924826184-9bv48qrd54337j4gp8gh98gg4i89ope2.apps.googleusercontent.com",
+          "client_id": "81847378525-4ipvgtkapr6kjeivg4isicl5o6jcfeah.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC50xWvJQerCrTHuko8sNRRaXESpjm7vDY"
+          "current_key": "AIzaSyDoeKlthkQAn3_HlzL-sVbf0QO4Ipfu9VE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "512924826184-9bv48qrd54337j4gp8gh98gg4i89ope2.apps.googleusercontent.com",
+              "client_id": "81847378525-4ipvgtkapr6kjeivg4isicl5o6jcfeah.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

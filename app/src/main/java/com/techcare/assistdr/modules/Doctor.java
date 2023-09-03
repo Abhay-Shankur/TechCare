@@ -1,5 +1,7 @@
 package com.techcare.assistdr.modules;
 
+import java.util.HashMap;
+
 public class Doctor {
     private String doctorName;
     private String doctorEmail;
@@ -12,16 +14,43 @@ public class Doctor {
     private String doctorRating;
     private String totalRating;
     private String totalReviewer;
+    private String doctorFirestore;
+    private String doctorUid;
+    private HashMap<String,Object> liveLocation;
+
+    public HashMap<String, Object> getLiveLocation() {
+        return liveLocation;
+    }
+
+    public void setLiveLocation(HashMap<String, Object> liveLocation) {
+        this.liveLocation = liveLocation;
+    }
+
+    public String getDoctorFirestore() {
+        return doctorFirestore;
+    }
+
+    public void setDoctorFirestore(String doctorFirestore) {
+        this.doctorFirestore = doctorFirestore;
+    }
+
+    public String getDoctorUid() {
+        return doctorUid;
+    }
+
+    public void setDoctorUid(String doctorUid) {
+        this.doctorUid = doctorUid;
+    }
 
     public Doctor() {
     }
 
-    public Doctor(String name, String email, String phone, String enPass) {
-        this.doctorName=name;
-        this.doctorEmail=email;
-        this.doctorPhone=phone;
-        this.doctorPassword = enPass;
-    }
+//    public Doctor(String name, String email, String phone, String enPass) {
+//        this.doctorName=name;
+//        this.doctorEmail=email;
+//        this.doctorPhone=phone;
+//        this.doctorPassword = enPass;
+//    }
 
     public String getDoctorName() {
         return doctorName;

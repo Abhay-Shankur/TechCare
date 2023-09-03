@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.techcare.assistdr.BuildConfig;
 import com.techcare.assistdr.R;
 import com.techcare.assistdr.modules.PrescriptionFile;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
@@ -33,15 +33,15 @@ public class PrescriptionAdapter extends RecyclerView.Adapter<PrescriptionAdapte
         this.prescriptionFileList = prescriptionFileList;
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_file_list, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         PrescriptionFile prescriptionFile= prescriptionFileList.get(position);
         holder.fileName.setText(prescriptionFile.getName());
         holder.fileDate.setText(prescriptionFile.getDate());
@@ -59,7 +59,7 @@ public class PrescriptionAdapter extends RecyclerView.Adapter<PrescriptionAdapte
         public TextView fileDate;
         public TextView fileTime;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NotNull View itemView) {
             super(itemView);
             fileName= itemView.findViewById(R.id.fileName_textView);
             fileDate= itemView.findViewById(R.id.fileDate_textView);

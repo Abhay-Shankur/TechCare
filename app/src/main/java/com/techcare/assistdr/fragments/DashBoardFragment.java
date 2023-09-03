@@ -15,11 +15,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.techcare.assistdr.MainActivity;
 import com.techcare.assistdr.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DashBoardFragment #newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DashBoardFragment extends Fragment {
 
     public DashBoardFragment() {

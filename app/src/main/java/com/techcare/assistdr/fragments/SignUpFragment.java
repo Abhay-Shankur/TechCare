@@ -3,7 +3,6 @@ package com.techcare.assistdr.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -15,16 +14,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.techcare.assistdr.R;
-import com.techcare.assistdr.api.ApiClient;
-import com.techcare.assistdr.api.ApiInterface;
-import com.techcare.assistdr.api.response.ResponseDrAuth;
-import com.techcare.assistdr.api.tablesclass.TableDrAuth;
+//import com.techcare.assistdr.api.ApiClient;
+//import com.techcare.assistdr.api.ApiInterface;
+//import com.techcare.assistdr.api.response.ResponseDrAuth;
+//import com.techcare.assistdr.api.tablesclass.TableDrAuth;
 import com.techcare.assistdr.modules.Doctor;
+
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +77,7 @@ public class SignUpFragment extends Fragment {
                         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.getText().toString(),pass.getText().toString()).addOnCompleteListener(
                                 new OnCompleteListener<AuthResult>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                    public void onComplete(@NotNull Task<AuthResult> task) {
                                         loading.dismiss();
                                         if (task.isSuccessful()){
                                             loading= new ProgressDialog(getContext());
@@ -80,36 +85,70 @@ public class SignUpFragment extends Fragment {
                                             loading.setMessage("Loading...");
                                             loading.show();
                                             String id=task.getResult().getUser().getUid();
-                                            Doctor doctor =new Doctor(name.getText().toString(), email.getText().toString(), phone.getText().toString(),                                                        pass.getText().toString());
+                                            Doctor doctor = new Doctor();
+                                            doctor.setDoctorUid(id);
+                                            doctor.setDoctorName(name.getText().toString());
+                                            doctor.setDoctorEmail(email.getText().toString());
+                                            doctor.setDoctorPhone(phone.getText().toString());
+                                            doctor.setDoctorPassword(pass.getText().toString());
 //                                            TableDrAuth doctor
-                                            FirebaseDatabase.getInstance().getReference().child("Users").child(id).setValue(doctor);
-
-                                            Retrofit retrofit =ApiClient.getClient();
-                                            ApiInterface apiInterface=retrofit.create(ApiInterface.class);
-                                            apiInterface.postDrAuth(id, name.getText().toString(), email.getText().toString(), pass.getText().toString(),                                                       phone.getText().toString()).enqueue(new Callback<ResponseDrAuth>() {
-                                                    @Override
-                                                    public void onResponse(Call<ResponseDrAuth> call, Response<ResponseDrAuth> response) {
-                                                        loading.dismiss();
-                                                        if(response.body().getStatusCode().equals("200")) {
-                                                            Toast.makeText(getContext(), "Sign Up Successful", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            FirebaseAuth.getInstance().getCurrentUser().delete();
-                                                            FirebaseDatabase.getInstance().getReference().child("Users").child(id).removeValue();
-                                                            Toast.makeText(getContext(), "Couldn't Sign Up", Toast.LENGTH_SHORT).show();
+                                            FirebaseFirestore.getInstance()
+                                                    .collection("Doctors")
+                                                    .add(doctor)
+                                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentReference documentReference) {
+                                                            Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
+                                                            FirebaseFirestore.getInstance().collection("Doctors")
+                                                                    .document(documentReference.getId())
+                                                                    .update("doctorFirestore",documentReference.getId());
+                                                            Doctor d = new Doctor();
+                                                            d.setDoctorFirestore(documentReference.getId());
+                                                            FirebaseDatabase.getInstance()
+                                                                    .getReference()
+                                                                    .child("Doctors")
+                                                                    .child("Users")
+                                                                    .child(id)
+                                                                    .setValue(d);
                                                         }
-                                                        getActivity().finish();
-                                                    }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(Exception e) {
 
-                                                    @Override
-                                                    public void onFailure(Call<ResponseDrAuth> call, Throwable t) {
-                                                        loading.dismiss();
-                                                        FirebaseAuth.getInstance().getCurrentUser().delete();
-                                                        FirebaseDatabase.getInstance().getReference().child("Users").child(id).removeValue();
-                                                        Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                                                        Log.e("TAG", "onFailure: ", t);
-                                                        getActivity().finish();
-                                                    }
-                                                });
+                                                        }
+                                                    });
+
+
+                                            Toast.makeText(getContext(), "Sign Up Successful", Toast.LENGTH_SHORT).show();
+                                            loading.dismiss();
+                                            getActivity().finish();
+//                                            Retrofit retrofit =ApiClient.getClient();
+//                                            ApiInterface apiInterface=retrofit.create(ApiInterface.class);
+//                                            apiInterface.postDrAuth(id, name.getText().toString(), email.getText().toString(), pass.getText().toString(),                                                       phone.getText().toString()).enqueue(new Callback<ResponseDrAuth>() {
+//                                                    @Override
+//                                                    public void onResponse(Call<ResponseDrAuth> call, Response<ResponseDrAuth> response) {
+//                                                        loading.dismiss();
+//                                                        if(response.body().getStatusCode().equals("200")) {
+//                                                            Toast.makeText(getContext(), "Sign Up Successful", Toast.LENGTH_SHORT).show();
+//                                                        } else {
+//                                                            FirebaseAuth.getInstance().getCurrentUser().delete();
+//                                                            FirebaseDatabase.getInstance().getReference().child("Users").child(id).removeValue();
+//                                                            Toast.makeText(getContext(), "Couldn't Sign Up", Toast.LENGTH_SHORT).show();
+//                                                        }
+//                                                        getActivity().finish();
+//                                                    }
+//
+//                                                    @Override
+//                                                    public void onFailure(Call<ResponseDrAuth> call, Throwable t) {
+//                                                        loading.dismiss();
+//                                                        FirebaseAuth.getInstance().getCurrentUser().delete();
+//                                                        FirebaseDatabase.getInstance().getReference().child("Users").child(id).removeValue();
+//                                                        Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+//                                                        Log.e("TAG", "onFailure: ", t);
+//                                                        getActivity().finish();
+//                                                    }
+//                                                });
 
 //                                            getActivity().finish();
                                         } else {

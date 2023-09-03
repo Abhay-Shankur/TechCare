@@ -1,6 +1,5 @@
 package com.techcare.assistdr;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -18,6 +17,8 @@ import com.techcare.assistdr.fragments.DashBoardFragment;
 import com.techcare.assistdr.fragments.EPrescriptionFragment;
 import com.techcare.assistdr.fragments.MenuFragment;
 import com.techcare.assistdr.fragments.NotificationFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 //        Bottom Navigation Bar.
         activityMainBinding.customBottomNavigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NotNull MenuItem item) {
                 FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
                 switch (item.getItemId()){
                     case R.id.menuitem_dashboard :

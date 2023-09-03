@@ -2,13 +2,14 @@ package com.techcare.assistdr.adapters;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.techcare.assistdr.fragments.LogInFragment;
 import com.techcare.assistdr.fragments.SignUpFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 public class LoginAdapter extends FragmentStateAdapter {
 
@@ -19,7 +20,7 @@ public class LoginAdapter extends FragmentStateAdapter {
         super(fa);
     }
 
-    @NonNull
+    @NotNull
     @Override
     public Fragment createFragment(int position) {
         if (position == 1) {

@@ -4,7 +4,6 @@ package com.techcare.assistdr.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -21,15 +20,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.techcare.assistdr.R;
 
+import org.jetbrains.annotations.NotNull;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LogInFragment #newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LogInFragment extends Fragment {
 
-//    final String TAG="Login Fragment";
+    final String TAG="Login Fragment";
 
 //    Initialize the Views
     EditText editText_email,editText_password;
@@ -63,7 +58,7 @@ public class LogInFragment extends Fragment {
                     progressDialog.show();
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        public void onComplete(@NotNull Task<AuthResult> task) {
                             progressDialog.dismiss();
                             if (task.isSuccessful()) {
                                 getActivity().finish();

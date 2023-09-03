@@ -1,6 +1,5 @@
 package com.techcare.assistdr;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,6 +15,8 @@ import android.widget.Toast;
 
 import com.techcare.assistdr.databinding.ActivityMakePrescriptionBinding;
 import com.techcare.assistdr.modules.MakePrescription;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
@@ -99,7 +100,7 @@ public class MakePrescriptionActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (
             requestCode==PERMISSION_REQUSET_CODE &&

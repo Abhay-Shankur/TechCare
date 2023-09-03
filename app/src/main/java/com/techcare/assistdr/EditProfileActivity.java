@@ -1,6 +1,5 @@
 package com.techcare.assistdr;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -11,17 +10,23 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Api;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.techcare.assistdr.api.ApiClient;
-import com.techcare.assistdr.api.ApiInterface;
-import com.techcare.assistdr.api.response.ResponseDoctors;
+//import com.techcare.assistdr.api.ApiClient;
+//import com.techcare.assistdr.api.ApiInterface;
+//import com.techcare.assistdr.api.response.ResponseDoctors;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.techcare.assistdr.databinding.ActivityEditProfileBinding;
 import com.techcare.assistdr.modules.Doctor;
+
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,10 +60,10 @@ public class EditProfileActivity extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
             String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
             FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-            DatabaseReference databaseReference =firebaseDatabase.getReference().child("Users").child(uid);
+            DatabaseReference databaseReference =firebaseDatabase.getReference().child("Doctors").child("Users").child(uid);
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                public void onDataChange(@NotNull DataSnapshot snapshot) {
                     Doctor doctor =snapshot.getValue(Doctor.class);
                     binding.editTextName.setText(doctor.getDoctorName());
                     binding.editTextSpecialis.setText(doctor.getDoctorSpecialis());
@@ -67,7 +72,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                public void onCancelled(@NotNull DatabaseError error) {
                     Log.e("TAG", "onCancelled: ", error.toException());
                 }
             });
@@ -79,10 +84,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (checkFields()) {
                     String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
                     FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-                    DatabaseReference databaseReference =firebaseDatabase.getReference().child("Users").child(uid);
-                    databaseReference.addValueEventListener(new ValueEventListener() {
+                    DatabaseReference databaseReference =firebaseDatabase.getReference().child("Doctors").child("Users").child(uid);
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        public void onDataChange(@NotNull DataSnapshot snapshot) {
                             Doctor doctor =snapshot.getValue(Doctor.class);
                             doctor.setDoctorName(binding.editTextName.getText().toString());
                             doctor.setDoctorSpecialis(binding.editTextSpecialis.getText().toString());
@@ -90,9 +95,10 @@ public class EditProfileActivity extends AppCompatActivity {
                             doctor.setDoctorHomeTown(binding.editTextHomeTown.getText().toString());
 //                            FirebaseDatabase.getInstance().getReference().child("Users").child(uid).setValue(doctor);
                             updateData(doctor);
+                            EditProfileActivity.this.finish();
                         }
                         @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                        public void onCancelled(@NotNull DatabaseError error) {
                             Log.e("TAG", "onCancelled: ", error.toException());
                         }
                     });
@@ -108,7 +114,7 @@ public class EditProfileActivity extends AppCompatActivity {
             return false;
         }
         if (binding.editTextSpecialis.getText().toString().isEmpty()) {
-            binding.editTextSpecialis.setError("Enter Specialis");
+            binding.editTextSpecialis.setError("Enter Specialist");
             return false;
         }
         if (binding.editTextEducation.getText().toString().isEmpty()) {
@@ -122,36 +128,92 @@ public class EditProfileActivity extends AppCompatActivity {
         return true;
     }
 
-    private void updateData(Doctor dr) {
+    private void updateData(Doctor doctor) {
         String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String name=binding.editTextName.getText().toString();
-        String specialis=binding.editTextSpecialis.getText().toString();
-        String education=binding.editTextEducation.getText().toString();
-        String homeTown=binding.editTextHomeTown.getText().toString();
-        Retrofit retrofit= ApiClient.getClient();
-        ApiInterface apiInterface=retrofit.create(ApiInterface.class);
-        ProgressDialog progressDialog=new ProgressDialog(EditProfileActivity.this);
-        progressDialog.setTitle("Profile");
-        progressDialog.setMessage("Saving Changes...");
-        progressDialog.show();
-        apiInterface.putDoctor(uid, name, "", specialis, education, homeTown).enqueue(new Callback<ResponseDoctors>() {
-            @Override
-            public void onResponse(Call<ResponseDoctors> call, Response<ResponseDoctors> response) {
-                progressDialog.dismiss();
-                if (response.body().getStatusCode().equals("200")) {
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(uid).setValue(dr);
-                    Toast.makeText(EditProfileActivity.this, "Saved Changes", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Log.d("TAG", "onResponse: Response not match "+response.body().getStatusMessage());
-                }
-            }
+        doctor.setDoctorName(binding.editTextName.getText().toString());
+        doctor.setDoctorSpecialis(binding.editTextSpecialis.getText().toString());
+        doctor.setDoctorEducation(binding.editTextEducation.getText().toString());
+        doctor.setDoctorHomeTown(binding.editTextHomeTown.getText().toString());
 
-            @Override
-            public void onFailure(Call<ResponseDoctors> call, Throwable t) {
-                progressDialog.dismiss();
-                Log.d("TAG", "onResponse: Response Failed");
-            }
-        });
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("Doctors")
+                .child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Doctor d =snapshot.getValue(Doctor.class);
+                        FirebaseFirestore.getInstance()
+                                .collection("Doctors")
+                                .document(d.getDoctorFirestore())
+                                .update(
+                                        "doctorName", doctor.getDoctorName().toString(),
+                                        "doctorSpecialis", doctor.getDoctorSpecialis().toString(),
+                                        "doctorEducation", doctor.getDoctorEducation().toString(),
+                                        "doctorHomeTown", doctor.getDoctorHomeTown().toString(),
+                                        "doctorFirestore", d.getDoctorFirestore().toString())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(EditProfileActivity.this, "Saved Changes", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                      Log.w("TAG", "Error adding document", e);
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("TAG", "Error ");
+                    }
+                });
+//        FirebaseFirestore.getInstance()
+//                .collection("Doctors")
+//                .add(doctor)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
+//                        FirebaseDatabase.getInstance().getReference().child("Doctors").child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("doctorFirestore").setValue(documentReference.getId());
+//                        Toast.makeText(EditProfileActivity.this, "Saved Changes", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NotNull Exception e) {
+//                        Log.w("TAG", "Error adding document", e);
+//                    }
+//                });
+//        Retrofit retrofit= ApiClient.getClient();
+//        ApiInterface apiInterface=retrofit.create(ApiInterface.class);
+//        ProgressDialog progressDialog=new ProgressDialog(EditProfileActivity.this);
+//        progressDialog.setTitle("Profile");
+//        progressDialog.setMessage("Saving Changes...");
+//        progressDialog.show();
+//        apiInterface.putDoctor(uid, name, "", specialis, education, homeTown).enqueue(new Callback<ResponseDoctors>() {
+//            @Override
+//            public void onResponse(Call<ResponseDoctors> call, Response<ResponseDoctors> response) {
+//                progressDialog.dismiss();
+//                if (response.body().getStatusCode().equals("200")) {
+//                    FirebaseDatabase.getInstance().getReference().child("Users").child(uid).setValue(dr);
+//                    Toast.makeText(EditProfileActivity.this, "Saved Changes", Toast.LENGTH_SHORT).show();
+//                    finish();
+//                } else {
+//                    Log.d("TAG", "onResponse: Response not match "+response.body().getStatusMessage());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseDoctors> call, Throwable t) {
+//                progressDialog.dismiss();
+//                Log.d("TAG", "onResponse: Response Failed");
+//            }
+//        });
     }
 }

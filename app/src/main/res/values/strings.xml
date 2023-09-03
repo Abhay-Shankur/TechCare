@@ -2,7 +2,7 @@
     <string name="app_name">Assist DR</string>
 
     <!--    Web Client Id Override-->
-    <!--            <string name="default_web_client_id">512924826184-jiv730c0l5cvd2qjpcck7hqd95gqt1dg.apps.googleusercontent.com</string>-->
+<!--                <string name="default_web_client_id">81847378525-4ipvgtkapr6kjeivg4isicl5o6jcfeah.apps.googleusercontent.com</string>-->
 
     <!--  Menu Item Strings  -->
     <string name="menu_item_dashboard">Dashboard</string>
