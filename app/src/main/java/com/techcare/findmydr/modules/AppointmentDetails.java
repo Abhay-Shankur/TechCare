@@ -5,12 +5,14 @@ import java.util.HashMap;
 public class AppointmentDetails {
     /*---------- Init Variables -------------------- */
     String appointmentId;
+    String doctorId;
     String prescriptionId;
-    String appointmentname;
-    String appointmentbirthdate;
-    String appointmentgender;
-    String appointmentphone;
+    String appointmentName;
+    String appointmentBirthdate;
+    String appointmentGender;
+    String appointmentPhone;
     String appointmentSchedule;
+    String appointmentDescription;
     HashMap<String,Object> liveLocation;
     boolean isEmergency;
 
@@ -29,32 +31,48 @@ public class AppointmentDetails {
         this.appointmentId = appointmentId;
     }
 
-    public String getAppointmentname() {
-        return appointmentname;
+    public String getappointmentName() {
+        return appointmentName;
     }
-    public void setAppointmentname(String appointmentname) {
-        this.appointmentname = appointmentname;
-    }
-
-    public String getAppointmentbirthdate() {
-        return appointmentbirthdate;
-    }
-    public void setAppointmentbirthdate(String appointmentbirthdate) {
-        this.appointmentbirthdate = appointmentbirthdate;
+    public void setappointmentName(String appointmentName) {
+        this.appointmentName = appointmentName;
     }
 
-    public String getAppointmentgender() {
-        return appointmentgender;
-    }
-    public void setAppointmentgender(String appointmentgender) {
-        this.appointmentgender = appointmentgender;
+    public String getDoctorId() {
+        return doctorId;
     }
 
-    public String getAppointmentphone() {
-        return appointmentphone;
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
     }
-    public void setAppointmentphone(String appointmentphone) {
-        this.appointmentphone = appointmentphone;
+
+    public String getPrescriptionId() {
+        return prescriptionId;
+    }
+
+    public void setPrescriptionId(String prescriptionId) {
+        this.prescriptionId = prescriptionId;
+    }
+
+    public String getappointmentBirthdate() {
+        return appointmentBirthdate;
+    }
+    public void setappointmentBirthdate(String appointmentBirthdate) {
+        this.appointmentBirthdate = appointmentBirthdate;
+    }
+
+    public String getappointmentGender() {
+        return appointmentGender;
+    }
+    public void setappointmentGender(String appointmentGender) {
+        this.appointmentGender = appointmentGender;
+    }
+
+    public String getappointmentPhone() {
+        return appointmentPhone;
+    }
+    public void setappointmentPhone(String appointmentPhone) {
+        this.appointmentPhone = appointmentPhone;
     }
 
     public String getAppointmentSchedule() {
@@ -62,5 +80,29 @@ public class AppointmentDetails {
     }
     public void setAppointmentSchedule(String appointmentSchedule) {
         this.appointmentSchedule = appointmentSchedule;
+    }
+
+    public String getAppointmentDescription() {
+        return appointmentDescription;
+    }
+
+    public void setAppointmentDescription(String appointmentDescription) {
+        this.appointmentDescription = appointmentDescription;
+    }
+
+    public HashMap<String, Object> getLiveLocation() {
+        return liveLocation;
+    }
+
+    public void setLiveLocation(HashMap<String, Object> liveLocation) {
+        this.liveLocation = liveLocation;
+    }
+
+    public boolean isEmergency() {
+        return isEmergency;
+    }
+
+    public void setEmergency(boolean emergency) {
+        isEmergency = emergency;
     }
 }

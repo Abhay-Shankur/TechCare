@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        doctorsList.clear();
 //        Fetching List of Doctors
         fetchDoctorsList();
     }
