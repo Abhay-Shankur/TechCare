@@ -8,37 +8,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.techcare.findmydr.DoctorDetailActivity;
 import com.techcare.findmydr.R;
-import com.techcare.findmydr.api.tablesclass.TableDoctors;
+import com.techcare.findmydr.modules.Doctor;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class DoctorListAdapter extends RecyclerView.Adapter<DoctorListAdapter.ViewHolder> {
 
     Context context;
-    List<TableDoctors> list;
+    List<Doctor> list;
 
-    public DoctorListAdapter(Context context, List<TableDoctors> list) {
+    public DoctorListAdapter(Context context, List<Doctor> list) {
         this.context = context;
         this.list = list;
     }
 
-    @NonNull
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_top_doctors_item,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        TableDoctors doctorInfo=list.get(position);
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
+        Doctor doctorInfo=list.get(position);
         holder.profileImg.setImageDrawable(Drawable.createFromPath(doctorInfo.getDoctorProfilepic()));
         holder.drName.setText(doctorInfo.getDoctorName());
         holder.drSpecialis.setText(doctorInfo.getDoctorSpecialis());
@@ -54,7 +54,7 @@ public class DoctorListAdapter extends RecyclerView.Adapter<DoctorListAdapter.Vi
         ImageView profileImg;
         TextView drName,drSpecialis,drRating;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NotNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this::onClick);
             profileImg=itemView.findViewById(R.id.profile_imageView);
@@ -66,9 +66,9 @@ public class DoctorListAdapter extends RecyclerView.Adapter<DoctorListAdapter.Vi
         @Override
         public void onClick(View view) {
             int pos=this.getAdapterPosition();
-            TableDoctors doctorInfo=list.get(pos);
+            Doctor doctorInfo=list.get(pos);
             Intent intent= new Intent(context, DoctorDetailActivity.class);
-            intent.putExtra("Doctor Id",doctorInfo.getDoctorUid());
+            intent.putExtra("Firestore Id",doctorInfo.getDoctorFirestore());
             context.startActivity(intent);
         }
     }

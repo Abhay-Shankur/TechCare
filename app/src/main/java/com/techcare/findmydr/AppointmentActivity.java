@@ -11,22 +11,24 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.techcare.findmydr.api.ApiClient;
-import com.techcare.findmydr.api.ApiInterface;
-import com.techcare.findmydr.api.response.ResponseAppointmentDetails;
-import com.techcare.findmydr.api.response.ResponseAppointments;
-import com.techcare.findmydr.api.tablesclass.TableAppointments;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.techcare.findmydr.modules.AppointmentDetails;
 import com.techcare.findmydr.databinding.ActivityAppointmentBinding;
 
 import java.util.Calendar;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class AppointmentActivity extends AppCompatActivity {
 
@@ -56,49 +58,65 @@ public class AppointmentActivity extends AppCompatActivity {
 //                TODO Design Login
 //                TODO set respective id's
                 String api= FirebaseAuth.getInstance().getCurrentUser().getUid();
-                setAppointment(api, getIntent().getExtras().getString("Doctor Id"), name, bday,radio,phone,schdate+" "+schtime);
-//                setAppointment("g", "BKjM1xWLynT4IoY2aw06JDwcAGq1", name, bday,radio,phone,schdate+" "+schtime);
-
+                setAppointment(api, getIntent().getExtras().getString("Firestore Id"), name, bday,radio,phone,schdate+" "+schtime);
             }
         });
     }
 
-    private void setAppointment(String pid, String drid, String aptname, String aptbdate, String aptgender, String aptphone, String aptsch) {
-        Retrofit retrofit= ApiClient.getClient();
-        ApiInterface apiInterface=retrofit.create(ApiInterface.class);
+//    Creating an Appointment Object and setting it into Firestore and FirestoreId assigned to Doctor into RTDb.
+    private void setAppointment(String pid, String drFsId, String aptname, String aptbdate, String aptgender, String aptphone, String aptsch) {
 
-        apiInterface.setAppointment(pid, drid, aptsch).enqueue(new Callback<ResponseAppointments>() {
-            @Override
-            public void onResponse(Call<ResponseAppointments> call, Response<ResponseAppointments> response) {
-                if (response!=null) {
-                    if (response.body().getStatusCode().equals("200") && response.body().getStatusMessage().equals("Data Inserted Successfully")){
-                        TableAppointments appointments=response.body().getDataList().get(0);
-                        String aptid=appointments.getAppointmentId();
+        AppointmentDetails appointmentDetails = new AppointmentDetails();
 
-                        apiInterface.setAppointmentDetails(pid, aptid, aptname, aptbdate, aptgender, aptphone, aptsch).enqueue(new Callback<ResponseAppointmentDetails>() {
-                            @Override
-                            public void onResponse(Call<ResponseAppointmentDetails> call, Response<ResponseAppointmentDetails> response) {
-                                Toast.makeText(AppointmentActivity.this, "Appointed", Toast.LENGTH_SHORT).show();
-                            }
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        firestore.collection("Doctors")
+                .document(drFsId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            String doctorUid=task.getResult().get("doctorUid").toString();
+                            firestore.collection("Appointments")
+                                    .add(appointmentDetails)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            firestore.collection("Appointments")
+                                                    .document(documentReference.getId())
+                                                    .update("appointmentId",documentReference.getId());
 
-                            @Override
-                            public void onFailure(Call<ResponseAppointmentDetails> call, Throwable t) {
-                                Toast.makeText(AppointmentActivity.this, "Fail inner", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(AppointmentActivity.this, response.body().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                                            reference.child("Appointments")
+                                                    .child(doctorUid)
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot snapshot) {
+                                                            reference.child("Appointments")
+                                                                    .child(doctorUid)
+                                                                    .child(String.valueOf(snapshot.getChildrenCount()))
+                                                                    .setValue(documentReference.getId());
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError error) {
+                                                            Log.e("TAG", "onCancelled: ", error.toException());
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e("TAG", "onFailure: ", e);
+                                        }
+                                    });
+                        }
                     }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseAppointments> call, Throwable t) {
-                Toast.makeText(AppointmentActivity.this, "Fail outer", Toast.LENGTH_SHORT).show();
-            }
-        });
+                });
     }
 
+//    Function for setting the BirthDate and schedule.
     public void handleDateAndTime(View view) {
         final Calendar calendar= Calendar.getInstance();
         if (view.getId() == activityAppointmentBinding.btnSetBday.getId()){
@@ -157,9 +175,6 @@ public class AppointmentActivity extends AppCompatActivity {
                 }
             }, H, M, true);
             timePickerDialog.show();
-        } else  {
-
         }
     }
-
 }

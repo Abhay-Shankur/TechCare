@@ -1,6 +1,6 @@
 package com.techcare.findmydr.fragments;
 
-import android.app.ProgressDialog;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,28 +10,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.techcare.findmydr.adapters.DoctorListAdapter;
-import com.techcare.findmydr.api.ApiClient;
-import com.techcare.findmydr.api.ApiInterface;
-import com.techcare.findmydr.api.response.ResponseDoctors;
-import com.techcare.findmydr.api.tablesclass.TableDoctors;
 import com.techcare.findmydr.databinding.FragmentHomeBinding;
+import com.techcare.findmydr.modules.Doctor;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
 
 public class HomeFragment extends Fragment {
     FragmentHomeBinding fragmentHomeBinding;
-    ArrayList<TableDoctors> doctorsList;
+    ArrayList<Doctor> doctorsList;
     DoctorListAdapter adapter;
     public HomeFragment() {
         // Required empty public constructor
@@ -46,11 +44,10 @@ public class HomeFragment extends Fragment {
 //        To Hide Layout If No Appointments
 
 //        fragmentHomeBinding.includeAppointmentToday.layoutAppointmentTodayMain.setVisibility(View.GONE);
-//TODO FIREBASE REALTIME DATABASE setting 
 
         fragmentHomeBinding.includeTopDoctors.layoutTopDoctorsRecyclerView.setHasFixedSize(true);
         fragmentHomeBinding.includeTopDoctors.layoutTopDoctorsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        doctorsList= new ArrayList<TableDoctors>();
+        doctorsList= new ArrayList<Doctor>();
         adapter=new DoctorListAdapter(getContext(),doctorsList);
         fragmentHomeBinding.includeTopDoctors.layoutTopDoctorsRecyclerView.setAdapter(adapter);
 
@@ -66,44 +63,48 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchDoctorsList() {
-        Retrofit retrofit= ApiClient.getClient();
-        ApiInterface apiInterface=retrofit.create(ApiInterface.class);
+        FirebaseDatabase.getInstance().getReference()
+                .child("Doctors").child("Users")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        for (DataSnapshot ds: snapshot.getChildren()) {
+                            Doctor doctor = ds.getValue(Doctor.class);
+                            Log.d("TAG", "onDataChange: "+doctor.getDoctorFirestore());
+                            FirebaseFirestore.getInstance()
+                                    .collection("Doctors")
+                                    .document(doctor.getDoctorFirestore())
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @SuppressLint("NotifyDataSetChanged")
+                                        @Override
+                                        public void onComplete(Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                if (document.exists()) {
+                                                    Gson gson = new Gson();
+                                                    JsonElement jsonElement = gson.toJsonTree(document.getData());
+                                                    Doctor d = gson.fromJson(jsonElement, Doctor.class);
+                                                    doctorsList.add(doctorsList.size(), d);
+                                                    adapter.notifyDataSetChanged();
+                                                } else {
+                                                    Log.d("TAG", "No such document");
+                                                }
+                                            } else {
+                                                Log.d("TAG", "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
 
-        ProgressDialog progressDialog= new ProgressDialog(getContext());
-        progressDialog.setTitle("Find My DR");
-        progressDialog.setMessage("Please Wait ");
-        progressDialog.show();
-//        String api= FirebaseAuth.getInstance().getCurrentUser().getUid();
-        apiInterface.getDoctors().enqueue(new Callback<ResponseDoctors>() {
-            @Override
-            public void onResponse(Call<ResponseDoctors> call, Response<ResponseDoctors> response) {
-                try {
-                    if (response!=null){
-                        if (response.body().getStatusCode().equals("200") && response.body().getStatusMessage().equals("Data Found")) {
-                            for (TableDoctors dr:response.body().getDataList()) {
-                                doctorsList.add(doctorsList.size(),dr);
-                            }
-//                            doctorsList=response.body().getDataList();
-                            adapter.notifyDataSetChanged();
-                        } else  {
-                            Toast.makeText(getContext(), "No Data", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        Toast.makeText(getContext(), "Null Response", Toast.LENGTH_SHORT).show();
                     }
-                } catch (Exception e) {
-                    Toast.makeText(getContext(), "Exception", Toast.LENGTH_SHORT).show();
-                    Log.e("TAG", "onResponse: ", e);
-                }
-                progressDialog.dismiss();
-            }
 
-            @Override
-            public void onFailure(Call<ResponseDoctors> call, Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+
+                    }
+                });
+
     }
 
 }

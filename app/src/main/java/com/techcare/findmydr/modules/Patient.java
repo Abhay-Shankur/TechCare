@@ -1,6 +1,6 @@
-package com.techcare.findmydr.api.tablesclass;
+package com.techcare.findmydr.modules;
 
-public class TablePatient {
+public class Patient {
     /*---------- Init Variables -------------------- */
     String patientUid;
     String patientName;
@@ -10,9 +10,18 @@ public class TablePatient {
     String patientGender;
     String patientPhone;
     String nextFollowUp;
+    String patientFirestore;
+
+    public String getPatientFirestore() {
+        return patientFirestore;
+    }
+
+    public void setPatientFirestore(String patientFirestore) {
+        this.patientFirestore = patientFirestore;
+    }
 
     /*---------- Constructor -------------------- */
-    public TablePatient() {
+    public Patient() {
     }
 
     /*---------- Methods -------------------- */

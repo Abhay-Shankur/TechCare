@@ -1,40 +1,37 @@
 package com.techcare.findmydr;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 
-import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.techcare.findmydr.api.ApiClient;
-import com.techcare.findmydr.api.ApiInterface;
-import com.techcare.findmydr.api.response.ResponseDoctors;
-import com.techcare.findmydr.api.tablesclass.TableDoctors;
+import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.techcare.findmydr.databinding.ActivityDoctorDetailBinding;
+import com.techcare.findmydr.modules.Doctor;
 
-import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import org.jetbrains.annotations.NotNull;
 
 public class DoctorDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     ActivityDoctorDetailBinding doctorDetailBinding;
     MapView mapView;
+    private Doctor doctor;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,45 +40,41 @@ public class DoctorDetailActivity extends AppCompatActivity implements OnMapRead
         getSupportActionBar().setTitle(" ");
 
 
-//        Google Map
-        // Get a handle to the fragment and register the callback.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-//        mapFragment.onCreate(savedInstanceState);
         mapView=findViewById(R.id.mapView);
         mapView.getMapAsync(this::onMapReady);
         mapView.onCreate(savedInstanceState);
 
 //      Getting Intent String Data
         Bundle extrasData=getIntent().getExtras();
-        String druid=extrasData.getString("Doctor Id");
+        String druid=extrasData.getString("Firestore Id");
 
         if(FirebaseAuth.getInstance().getCurrentUser() !=null) {
-            String apikey=FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-//            <Api - Request >
-            Retrofit retrofit= ApiClient.getClient();
-            ApiInterface apiInterface= retrofit.create(ApiInterface.class);
-
-            apiInterface.getDoctor(apikey,druid).enqueue(new Callback<ResponseDoctors>() {
-                @Override
-                public void onResponse(Call<ResponseDoctors> call, Response<ResponseDoctors> response) {
-                    if (response!=null) {
-                        if (response.body().getStatusCode().equals("200") && response.body().getStatusMessage().equals("Data Found")) {
-                            TableDoctors tableDoctors=response.body().getDataList().get(0);
-                            doctorDetailBinding.textViewName.setText(tableDoctors.getDoctorName());
-                            doctorDetailBinding.textViewSpecialis.setText(tableDoctors.getDoctorSpecialis());
-
+            FirebaseFirestore.getInstance()
+                    .collection("Doctors")
+                    .document(druid)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Gson gson = new Gson();
+                                    JsonElement jsonElement = gson.toJsonTree(document.getData());
+                                    doctor = gson.fromJson(jsonElement, Doctor.class);
+                                    doctorDetailBinding.textViewName.setText(doctor.getDoctorName());
+                                    doctorDetailBinding.textViewSpecialis.setText(doctor.getDoctorSpecialis());
+                                    if (doctor.getLiveLocation() != null && !doctor.getLiveLocation().isEmpty()) {
+                                        mapView.getMapAsync(DoctorDetailActivity.this);
+                                    }
+                                } else {
+                                    Log.d("TAG", "No such document");
+                                }
+                            } else {
+                                Log.d("TAG", "get failed with ", task.getException());
+                            }
                         }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseDoctors> call, Throwable t) {
-
-                }
-            });
+                    });
         } else  {
 
         }
@@ -90,30 +83,31 @@ public class DoctorDetailActivity extends AppCompatActivity implements OnMapRead
             @Override
             public void onClick(View view) {
                 Intent intent= new Intent(DoctorDetailActivity.this, AppointmentActivity.class);
-                intent.putExtra("Doctor Id",getIntent().getExtras().getString("Doctor Id"));
+                intent.putExtra("Firestore Id", druid);
                 startActivity(intent);
             }
         });
     }
 
     @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-//        googleMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(19.075983, 72.877655))
-//                .title("Marker"));
-
-        // Add a marker in Sydney and move the camera
-        Geocoder geocoder= new Geocoder(DoctorDetailActivity.this);
+    public void onMapReady(@NotNull GoogleMap googleMap) {
         try {
-            String city="Mumbai";
-            double lat=geocoder.getFromLocationName(city,1).get(0).getLatitude();
-            double longi=geocoder.getFromLocationName(city,1).get(0).getLongitude();
-            LatLng position = new LatLng(lat, longi);
-            googleMap.addMarker(new MarkerOptions()
-                    .position(position)
-                    .title("Marker in "+city));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        } catch (IOException e) {
+//            String city="Mumbai";
+            if (doctor != null && doctor.getLiveLocation() != null && !doctor.getLiveLocation().isEmpty()) {
+                try {
+                    double latitude = Double.parseDouble(doctor.getLiveLocation().get("latitude").toString());
+                    double longitude = Double.parseDouble(doctor.getLiveLocation().get("longitude").toString());
+                    LatLng position = new LatLng(latitude, longitude);
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(position)
+                            .title("Doctor's Location")); // You can set a title for the marker
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 18)); // Adjust zoom level as needed
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -146,7 +140,7 @@ public class DoctorDetailActivity extends AppCompatActivity implements OnMapRead
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }

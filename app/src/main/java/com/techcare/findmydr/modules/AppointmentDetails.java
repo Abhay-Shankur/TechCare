@@ -1,16 +1,22 @@
-package com.techcare.findmydr.api.tablesclass;
+package com.techcare.findmydr.modules;
 
-public class TableAppointmentDetails {
+import java.util.HashMap;
+
+public class AppointmentDetails {
     /*---------- Init Variables -------------------- */
     String appointmentId;
+    String prescriptionId;
     String appointmentname;
     String appointmentbirthdate;
     String appointmentgender;
     String appointmentphone;
     String appointmentSchedule;
+    HashMap<String,Object> liveLocation;
+    boolean isEmergency;
+
 
     /*---------- Constructor -------------------- */
-    public TableAppointmentDetails() {
+    public AppointmentDetails() {
     }
 
     /*---------- Methods -------------------- */

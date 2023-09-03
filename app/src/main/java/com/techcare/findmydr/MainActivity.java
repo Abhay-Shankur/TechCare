@@ -1,18 +1,17 @@
 package com.techcare.findmydr;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowInsets;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.techcare.findmydr.databinding.ActivityMainBinding;
 import com.techcare.findmydr.fragments.HomeFragment;
 import com.techcare.findmydr.fragments.ProfileFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NotNull MenuItem item) {
                 FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
                 switch (item.getItemId()) {
                     case R.id.bottomMenuHome:

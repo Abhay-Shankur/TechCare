@@ -1,6 +1,5 @@
 package com.techcare.findmydr;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -17,6 +16,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -24,18 +25,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
-import com.techcare.findmydr.api.ApiClient;
-import com.techcare.findmydr.api.ApiInterface;
-import com.techcare.findmydr.api.response.ResponsePatient;
-import com.techcare.findmydr.api.tablesclass.TablePatient;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.techcare.findmydr.modules.Patient;
 import com.techcare.findmydr.databinding.ActivityLoginBinding;
 import com.techcare.findmydr.fragments.login.LoginFragment;
 import com.techcare.findmydr.fragments.login.SignupFragment;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import org.jetbrains.annotations.NotNull;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -74,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 //        Google Sign In Authentication
-        // Configure Google Sign In
+        // Configure Google Sign In TODO:Google signin
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -94,16 +91,12 @@ public class LoginActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-//                Log.d("Login Activity", "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 Log.w("Login Activity", "Google sign in failed", e);
             }
         }
@@ -114,46 +107,43 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NotNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                            TablePatient user = new TablePatient();
+                            Patient user = new Patient();
                             user.setPatientEmail(firebaseUser.getEmail());
                             user.setPatientName(firebaseUser.getDisplayName());
                             user.setPatientPhone(firebaseUser.getPhoneNumber());
-                            FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).setValue(user);
 
-//                            ProgressDialog loading= new ProgressDialog(LoginActivity.this);
-//                            loading.setTitle("Sign Up");
-//                            loading.setMessage("Loading...");
-//                            loading.show();
-
-                            Retrofit retrofit= ApiClient.getClient();
-                            ApiInterface apiInterface= retrofit.create(ApiInterface.class);
-                            apiInterface.setPatient(firebaseUser.getEmail(), firebaseUser.getUid(), firebaseUser.getDisplayName(), "", "", "", firebaseUser.getPhoneNumber(), "").enqueue(new Callback<ResponsePatient>() {
-                                @Override
-                                public void onResponse(Call<ResponsePatient> call, Response<ResponsePatient> response) {
-//                                    loading.dismiss();
-                                    if(response.body().getStatusCode().equals("200")) {
-                                        Toast.makeText(LoginActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        FirebaseAuth.getInstance().getCurrentUser().delete();
-                                        FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).removeValue();
-                                        Toast.makeText(LoginActivity.this, response.body().getStatusMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponsePatient> call, Throwable t) {
-//                                    loading.dismiss();
-                                    FirebaseAuth.getInstance().getCurrentUser().delete();
-                                    FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).removeValue();
-                                    Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                    Log.e("TAG", "onFailure: ", t);
-                                }
-                            });
+                            ProgressDialog loading= new ProgressDialog(LoginActivity.this);
+                            loading.setTitle("Sign Up");
+                            loading.setMessage("Loading...");
+                            loading.show();
+                            FirebaseFirestore.getInstance()
+                                    .collection("Patients")
+                                    .add(user)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            FirebaseFirestore.getInstance().collection("Patients")
+                                                    .document(documentReference.getId())
+                                                    .update("patientFirestore",documentReference.getId());
+                                            FirebaseDatabase.getInstance().getReference().child("Patients")
+                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .child("patientFirestore")
+                                                    .setValue(documentReference.getId());
+                                            Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                            loading.dismiss();
+//
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.

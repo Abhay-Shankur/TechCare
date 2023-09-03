@@ -1,7 +1,6 @@
 package com.techcare.findmydr.fragments;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.techcare.findmydr.LoginActivity;
-import com.techcare.findmydr.R;
 import com.techcare.findmydr.databinding.FragmentProfileBinding;
 
 public class ProfileFragment extends Fragment {
