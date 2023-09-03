@@ -12,13 +12,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +41,7 @@ import com.techcare.assistdr.modules.Doctor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class MenuFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 21;
@@ -43,7 +49,12 @@ public class MenuFragment extends Fragment {
 //    MenuAdapter menuAdapter;
 //    ArrayList<MenuListData> listData;
     final  String TAG="Menu Fragment";
+    private String uid=null;
     FragmentMenuBinding menuBinding;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
+
 
     public MenuFragment() {
         // Required empty public constructor
@@ -55,6 +66,7 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         menuBinding= FragmentMenuBinding.inflate(inflater, container, false);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getLayoutInflater().getContext());
 
         return menuBinding.getRoot();
     }
@@ -64,7 +76,7 @@ public class MenuFragment extends Fragment {
         super.onResume();
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
             DatabaseReference databaseReference =firebaseDatabase.getReference().child("Doctors").child("Users").child(uid);
@@ -101,92 +113,11 @@ public class MenuFragment extends Fragment {
             menuBinding.switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                    @Override
                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                       if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                               != PackageManager.PERMISSION_GRANTED) {
-                           // Request permission
-                           ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                                   MY_PERMISSIONS_REQUEST_LOCATION);
-                       }
-                       if (menuBinding.switch1.isChecked()){
-                           // Check if permission is granted
-                           FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-                           fusedLocationClient.getLastLocation()
-                                   .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                                       @Override
-                                       public void onSuccess(Location location) {
-                                           if (location != null) {
-                                               HashMap<String,Object> livelocation = new HashMap<>();
-                                               livelocation.put("latitude", location.getLatitude());
-                                               livelocation.put("longitude", location.getLongitude());
-                                               FirebaseDatabase.getInstance().getReference()
-                                                       .child("Doctors")
-                                                       .child("Users")
-                                                       .child(uid)
-                                                       .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                           @Override
-                                                           public void onDataChange(DataSnapshot snapshot) {
-                                                               Doctor d = snapshot.getValue(Doctor.class);
-                                                               FirebaseFirestore.getInstance()
-                                                                       .collection("Doctors")
-                                                                       .document(d.getDoctorFirestore())
-                                                                       .update("liveLocation", livelocation);
-                                                           }
-
-                                                           @Override
-                                                           public void onCancelled(DatabaseError error) {
-
-                                                           }
-                                                       });
-//                                               FirebaseFirestore.getInstance()
-//                                                       .collection("Doctors")
-//                                                       .document()
-//                                               FirebaseDatabase.getInstance()
-//                                                       .getReference()
-//                                                       .child("Doctors")
-//                                                       .child("Users")
-//                                                       .child(uid)
-//                                                       .child("liveLocation")
-//                                                       .setValue(livelocation)
-//                                                       .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                           @Override
-//                                                           public void onSuccess(Void unused) {
-//                                                               Toast.makeText(getContext(), "Live Location Updated", Toast.LENGTH_SHORT).show();
-//                                                           }
-//                                                       })
-//                                                       .addOnFailureListener(new OnFailureListener() {
-//                                                           @Override
-//                                                           public void onFailure(Exception e) {
-//                                                               Toast.makeText(getContext(), "ERROR for Live location", Toast.LENGTH_SHORT).show();
-//                                                           }
-//                                                       });
-                                           }
-                                       }
-                                   });
-                       } else {
-                           FirebaseDatabase.getInstance().getReference()
-                                   .child("Doctors")
-                                   .child("Users")
-                                   .child(uid)
-                                   .addListenerForSingleValueEvent(new ValueEventListener() {
-                                       @Override
-                                       public void onDataChange(DataSnapshot snapshot) {
-                                           Doctor d = snapshot.getValue(Doctor.class);
-                                           FirebaseFirestore.getInstance()
-                                                   .collection("Doctors")
-                                                   .document(d.getDoctorFirestore())
-                                                   .update("liveLocation", null);
-                                       }
-
-                                       @Override
-                                       public void onCancelled(DatabaseError error) {
-
-                                       }
-                                   });
-                       }
+                       updateLocation();
                    }
                }
             );
-
+            updateLocation();
 
             menuBinding.buttonLoginsignup.setText("Log Out");
             ProgressDialog progressDialog1= new ProgressDialog(getContext());
@@ -220,10 +151,141 @@ public class MenuFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Location permission granted, request location updates
+                updateLocation();
+            } else {
+                // Location permission denied, handle accordingly (e.g., show a message)
+                Log.w("TAG", "onRequestPermissionsResult: " );
             }
+//            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+//                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+//            }
         }
     }
 
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        // Stop location updates when the activity is destroyed
+//        if (locationCallback != null) {
+//            fusedLocationClient.removeLocationUpdates(locationCallback);
+//        }
+//    }
+
+    private void updateLocation(){
+//        if (ContextCompat.checkSelfPermission(getLayoutInflater().getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+//                == PackageManager.PERMISSION_GRANTED) {
+//
+//        } else {
+//            // Request location permission
+//            ActivityCompat.requestPermissions(getActivity(),
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                    MY_PERMISSIONS_REQUEST_LOCATION);
+//        }
+
+        if (menuBinding.switch1.isChecked()){
+            // Check if permission is granted
+            LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setNumUpdates(1);
+            locationRequest.setInterval(0);
+            locationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations()) {
+                        if (location != null) {
+                            HashMap<String,Object> livelocation = new HashMap<>();
+                            livelocation.put("latitude", location.getLatitude());
+                            livelocation.put("longitude", location.getLongitude());
+                            Toast.makeText(getLayoutInflater().getContext(), "Your Location has updated", Toast.LENGTH_SHORT).show();
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child("Doctors")
+                                    .child("Users")
+                                    .child(uid)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot snapshot) {
+                                            Doctor d = snapshot.getValue(Doctor.class);
+                                            FirebaseFirestore.getInstance()
+                                                    .collection("Doctors")
+                                                    .document(d.getDoctorFirestore())
+                                                    .update("liveLocation", livelocation);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError error) {
+
+                                        }
+                                    });
+                        }
+                    }
+                }
+            };
+            if (ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+                return;
+            }
+
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+//                           fusedLocationClient.getLastLocation()
+//                                   .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+//                                       @Override
+//                                       public void onSuccess(Location location) {
+//                                           if (location != null) {
+//                                               HashMap<String,Object> livelocation = new HashMap<>();
+//                                               livelocation.put("latitude", location.getLatitude());
+//                                               livelocation.put("longitude", location.getLongitude());
+//                                               FirebaseDatabase.getInstance().getReference()
+//                                                       .child("Doctors")
+//                                                       .child("Users")
+//                                                       .child(uid)
+//                                                       .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                           @Override
+//                                                           public void onDataChange(DataSnapshot snapshot) {
+//                                                               Doctor d = snapshot.getValue(Doctor.class);
+//                                                               FirebaseFirestore.getInstance()
+//                                                                       .collection("Doctors")
+//                                                                       .document(d.getDoctorFirestore())
+//                                                                       .update("liveLocation", livelocation);
+//                                                           }
+//
+//                                                           @Override
+//                                                           public void onCancelled(DatabaseError error) {
+//
+//                                                           }
+//                                                       });
+//                                           }
+//                                       }
+//                                   });
+        } else {
+            FirebaseDatabase.getInstance().getReference()
+                    .child("Doctors")
+                    .child("Users")
+                    .child(uid)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            Doctor d = snapshot.getValue(Doctor.class);
+                            FirebaseFirestore.getInstance()
+                                    .collection("Doctors")
+                                    .document(d.getDoctorFirestore())
+                                    .update("liveLocation", null);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+
+                        }
+                    });
+        }
+    }
 }
