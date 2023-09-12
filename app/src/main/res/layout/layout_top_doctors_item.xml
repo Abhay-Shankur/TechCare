@@ -34,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/default_image_icon" />
+                app:srcCompat="@drawable/doctor_profile" />
 
             <TextView
                 android:id="@+id/name_textView"

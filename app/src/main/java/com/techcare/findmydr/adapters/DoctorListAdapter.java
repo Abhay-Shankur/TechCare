@@ -39,7 +39,7 @@ public class DoctorListAdapter extends RecyclerView.Adapter<DoctorListAdapter.Vi
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         Doctor doctorInfo=list.get(position);
-        holder.profileImg.setImageDrawable(Drawable.createFromPath(doctorInfo.getDoctorProfilepic()));
+//        holder.profileImg.setImageDrawable(Drawable.createFromPath(doctorInfo.getDoctorProfilepic()));
         holder.drName.setText(doctorInfo.getDoctorName());
         holder.drSpecialis.setText(doctorInfo.getDoctorSpecialis());
         holder.drRating.setText(doctorInfo.getDoctorRating());

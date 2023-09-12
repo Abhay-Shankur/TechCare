@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="TODO"
-            app:srcCompat="@drawable/default_image_icon"
+            app:srcCompat="@drawable/doctor_profile"
             tools:ignore="ImageContrastCheck" />
     </androidx.cardview.widget.CardView>
 

@@ -53,7 +53,7 @@
                     android:layout_height="60dp"
                     android:contentDescription="@string/profile_image"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/default_image_icon"
+                    android:src="@drawable/doctor_profile"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
