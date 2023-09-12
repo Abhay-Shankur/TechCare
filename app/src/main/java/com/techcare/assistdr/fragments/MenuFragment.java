@@ -25,13 +25,16 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.techcare.assistdr.EditProfileActivity;
 import com.techcare.assistdr.LoginActivity;
@@ -89,7 +92,17 @@ public class MenuFragment extends Fragment {
 //                    Log.d(TAG, "onDataChange: "+snapshot.exists());
                     if (snapshot.exists()) {
                         Doctor doctor =snapshot.getValue(Doctor.class);
-                        menuBinding.textViewProfile.setText(doctor.getDoctorName());
+                        FirebaseFirestore.getInstance().collection("Doctors")
+                                .document(doctor.getDoctorFirestore())
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()){
+                                            menuBinding.textViewProfile.setText(task.getResult().get("doctorName").toString());
+                                        }
+                                    }
+                                });
                     }
                     progressDialog.dismiss();
                 }

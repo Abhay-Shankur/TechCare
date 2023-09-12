@@ -23,7 +23,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_bg_login_gradient"
+            app:srcCompat="@drawable/user_profile"
             tools:ignore="ImageContrastCheck" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/fredoka_bold"
             android:text="TextView"
-            android:textColor="@color/text_color"
+            android:textColor="?android:attr/textColorPrimaryNoDisable"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/appointmentCardviewPhone"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/fredoka_medium"
             android:text="TextView"
-            android:textColor="@color/text_color"
+            android:textColor="?android:attr/textColorPrimaryNoDisable"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/appointmentCardviewName"
             app:layout_constraintTop_toBottomOf="@+id/appointmentCardviewName" />
@@ -60,7 +60,7 @@
             android:layout_marginBottom="12dp"
             android:fontFamily="@font/fredoka_regular"
             android:text="TextView"
-            android:textColor="@color/text_color"
+            android:textColor="?android:attr/textColorPrimaryNoDisable"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

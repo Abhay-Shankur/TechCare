@@ -33,7 +33,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/constraintLayout"
             app:layout_constraintVertical_bias=".15"
-            app:srcCompat="@drawable/default_image_icon"
+            app:srcCompat="@drawable/doctor_profile"
             tools:ignore="ImageContrastCheck" />
 
         <TextView
@@ -42,7 +42,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/fredoka_semibold"
-            android:text="Some Text"
             android:textColor="@color/text_color"
             android:textSize="16sp"
             android:textStyle="bold"
