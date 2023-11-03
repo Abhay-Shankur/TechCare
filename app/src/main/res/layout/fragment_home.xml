@@ -61,12 +61,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <include
-                android:id="@+id/include_appointment_today"
-                layout="@layout/layout_appointment_today"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible" />
 
             <include
                 android:id="@+id/include_top_doctors"

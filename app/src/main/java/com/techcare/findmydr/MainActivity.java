@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.techcare.findmydr.databinding.ActivityMainBinding;
 import com.techcare.findmydr.fragments.HomeFragment;
 import com.techcare.findmydr.fragments.ProfileFragment;
+import com.techcare.findmydr.fragments.ScheduleFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.bottomMenuSchedule:
-                        fragmentTransaction.replace(mainBinding.changingLayout.getId(), new HomeFragment());
+                        fragmentTransaction.replace(mainBinding.changingLayout.getId(), new ScheduleFragment());
                         break;
 
 //                    case R.id.bottomMenuChat:

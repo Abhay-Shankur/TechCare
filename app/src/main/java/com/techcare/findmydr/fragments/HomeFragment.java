@@ -1,6 +1,7 @@
 package com.techcare.findmydr.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -63,6 +64,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchDoctorsList() {
+        ProgressDialog progressDialog = new ProgressDialog(getLayoutInflater().getContext());
+        progressDialog.setTitle("Fetching Doctors");
+        progressDialog.setMessage("Please wait while we are fetching doctors information.");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
         FirebaseDatabase.getInstance().getReference()
                 .child("Doctors").child("Users")
                 .addValueEventListener(new ValueEventListener() {
@@ -95,13 +101,13 @@ public class HomeFragment extends Fragment {
                                             }
                                         }
                                     });
-
+                            progressDialog.dismiss();
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-
+                        progressDialog.dismiss();
                     }
                 });
 

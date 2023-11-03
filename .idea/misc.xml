@@ -5,6 +5,9 @@
       <map>
         <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/activity_appointment.xml" value="0.2" />
         <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/activity_doctor_detail.xml" value="0.23229166666666667" />
+        <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/fragment_home.xml" value="0.23229166666666667" />
+        <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/fragment_profile.xml" value="0.176" />
+        <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/fragment_schedule.xml" value="0.23229166666666667" />
         <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/layout_appointment_today.xml" value="0.16" />
         <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/layout_top_doctors.xml" value="0.11296859169199595" />
         <entry key="..\:/Android Projects/Backup/Refine/FindMyDR/app/src/main/res/layout/layout_top_doctors_item.xml" value="0.23229166666666667" />
