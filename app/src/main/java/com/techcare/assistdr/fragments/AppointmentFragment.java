@@ -50,10 +50,6 @@ public class AppointmentFragment extends Fragment {
         recyclerView=view.findViewById(R.id.appointmentFragmentRecyclerView);
 
 
-        progressDialog= new ProgressDialog(getLayoutInflater().getContext());
-        progressDialog.setTitle("Appointments");
-        progressDialog.setMessage("Please Wait while we are fetching your Appointments");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         listData= new ArrayList<AppointmentDetails>();
 
@@ -73,7 +69,11 @@ public class AppointmentFragment extends Fragment {
 
         if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
 
-
+            progressDialog= new ProgressDialog(getLayoutInflater().getContext());
+            progressDialog.setTitle("Appointments");
+            progressDialog.setMessage("Please Wait while we are fetching your Appointments");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
             FirebaseDatabase.getInstance()
                     .getReference()
                     .child("Appointments")
@@ -82,7 +82,6 @@ public class AppointmentFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
 
-                            progressDialog.show();
                             FirebaseFirestore firestore=FirebaseFirestore.getInstance();
                             for (DataSnapshot ds:snapshot.getChildren()) {
                                 firestore.collection("Appointments")
@@ -104,6 +103,8 @@ public class AppointmentFragment extends Fragment {
                                             }
                                         });
                             }
+
+//                            appointmentAdapter.notifyDataSetChanged();
                             progressDialog.dismiss();
                             if (!snapshot.hasChildren())
                                 Toast.makeText(getLayoutInflater().getContext(), "No Appointments", Toast.LENGTH_SHORT).show();
@@ -112,6 +113,7 @@ public class AppointmentFragment extends Fragment {
                         @Override
                         public void onCancelled(DatabaseError error) {
 
+                            progressDialog.dismiss();
                         }
                     });
 //            progressDialog.dismiss();
